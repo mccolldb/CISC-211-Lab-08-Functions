@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Lab-09-starter.X
+PROJECTNAME=Lab-08-func-starter.X
 
 # Active Configuration
 DEFAULTCONF=sam_e51_cnano
