@@ -33,14 +33,14 @@
 #include "printFuncs.h"  // lab print funcs
 
 
-#define MAX_PRINT_LEN 1000
+#define MAX_PRINT_LEN 2000
 
 static uint8_t txBuffer[MAX_PRINT_LEN] = {0};
 
 
 static char * pass = "PASS";
 static char * fail = "FAIL";
-static char * oops = "OOPS";
+static char * oops = "OOPS!!!";
 
 
 
@@ -231,6 +231,7 @@ void testAsmUnpack(
         int32_t inputB,
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         )
 {
@@ -242,6 +243,8 @@ void testAsmUnpack(
     check(inputA, *unpackedA, passCount, failCount, &aCheck);
     check(inputB, *unpackedB, passCount, failCount, &bCheck);
 
+    if((onlyPrintFails == true) && (*failCount != 0))
+    {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmUnpack %s test number: %ld\r\n"
@@ -252,7 +255,7 @@ void testAsmUnpack(
             "expected B (multiplier) value:   %11ld; 0x%08lx\r\n"
             "unpacked A pass/fail:            %s\r\n"
             "unpacked B pass/fail:            %s\r\n"
-            "========= END -- asmUnpack debug output\r\n"
+            "========= END -- testAsmUnpack() debug output\r\n"
             "\r\n",
             desc,
             testNum,
@@ -265,6 +268,7 @@ void testAsmUnpack(
             ); 
 
     printAndWait((char *)txBuffer, txComplete);
+    }
     return ;
 };
 
@@ -279,6 +283,7 @@ void testAsmAbs(
         int32_t expSignBit,  // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         )
 {
@@ -292,6 +297,8 @@ void testAsmAbs(
     check(expAbs, r0_absVal, passCount, failCount, &r0Check);
     check(expSignBit, *signBit, passCount, failCount, &sbMemCheck);
 
+    if((onlyPrintFails == true) && (*failCount != 0))
+    {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmAbs %s test number: %ld\r\n"
@@ -301,7 +308,7 @@ void testAsmAbs(
             "sign bit stored in mem:   %11ld; 0x%08lx; %s\r\n"
             "expected abs value:   %11ld; 0x%08lx\r\n"
             "expected sign bit:    %11ld\r\n"
-            "========= END -- asmAbs debug output\r\n"
+            "========= END -- testAsmAbs() debug output\r\n"
             "\r\n",
             desc,
             testNum,
@@ -314,6 +321,7 @@ void testAsmAbs(
             ); 
 
     printAndWait((char *)txBuffer, txComplete);
+    }
     return ;
 }
 
@@ -327,6 +335,7 @@ void testAsmMult(
         int32_t expectedInitProduct, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         )
 {
@@ -336,6 +345,8 @@ void testAsmMult(
     
     check(expectedInitProduct, r0_initProd, passCount, failCount, &prodCheck);
 
+    if((onlyPrintFails == true) && (*failCount != 0))
+    {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmMult %s test number: %ld\r\n"
@@ -345,7 +356,7 @@ void testAsmMult(
             "Output:\r\n"
             "product abs(A) * abs(B): %11ld; 0x%08lx; %s\r\n"
             "Expected product:        %11ld; 0x%08lx\r\n"
-            "========= END -- asmMult debug output\r\n"
+            "========= END -- testAsmMult() debug output\r\n"
             "\r\n",
             desc,
             testNum,
@@ -356,6 +367,7 @@ void testAsmMult(
             ); 
 
     printAndWait((char *)txBuffer, txComplete);
+    }
     return;
 }
 
@@ -369,6 +381,7 @@ void testAsmFixSign(
         int32_t expectedFinalProduct, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         )
 {
@@ -378,6 +391,8 @@ void testAsmFixSign(
     
     check(expectedFinalProduct, r0_finalProduct, passCount, failCount, &prodCheck);
 
+    if((onlyPrintFails == true) && (*failCount != 0))
+    {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmFixSign %s test number: %ld\r\n"
@@ -388,7 +403,7 @@ void testAsmFixSign(
             "Output:\r\n"
             "Final (signed) product:     %11ld; 0x%08lx; %s\r\n"
             "Expected product:           %11ld; 0x%08lx\r\n"
-            "========= END -- asmFixSign debug output\r\n"
+            "========= END -- testAsmFixSign() debug output\r\n"
             "\r\n",
             desc,
             testNum,
@@ -400,6 +415,7 @@ void testAsmFixSign(
             ); 
 
     printAndWait((char *)txBuffer, txComplete);
+    }
     return;
 }
 
@@ -421,6 +437,7 @@ void testAsmMain(
         expectedValues * exp, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         )
 {
@@ -446,6 +463,8 @@ void testAsmMain(
     check(exp->finalProduct, finalProduct, passCount, failCount, &finalProdCheck);
     check(exp->finalProduct, r0_mainFinalProd, passCount, failCount, &r0Check);
  
+    if((onlyPrintFails == true) && (*failCount != 0))
+    {
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmMain %s test number: %ld\r\n"
             "test case INPUT: packed value:    0x%08lx\r\n"
@@ -496,6 +515,7 @@ void testAsmMain(
             );
     
     printAndWait((char *)txBuffer, txComplete);
+    }
     return;
 }
 

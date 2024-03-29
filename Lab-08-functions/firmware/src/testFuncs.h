@@ -75,11 +75,6 @@ extern "C" {
     // *****************************************************************************
 
 // define structs to make testing easier
-typedef struct _multOperand {
-    int32_t signedInputValue;
-    int32_t absValue; /* absolute value of input value */
-    int32_t signBit; /* sign bit of input value, 0 = +, 1 = - */
-} multOperand;
 
 typedef struct _expectedValues
 {
@@ -173,11 +168,11 @@ typedef struct _expectedValues
         }
      */
 
-    int32_t calcExpectedValues(
-            int32_t testNum, // test number
-            char *desc,      // optional test descriptor, or ""
-            uint32_t packedValue, // test case input
-            expectedValues *e);   // ptr to struct where values will be stored
+int32_t calcExpectedValues(
+        int32_t testNum, // test number
+        char *desc,      // optional test descriptor, or ""
+        uint32_t packedValue, // test case input
+        expectedValues *e);   // ptr to struct where values will be stored
 
 
 void testAsmUnpack(
@@ -190,6 +185,7 @@ void testAsmUnpack(
         int32_t inputB,
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         );
 
@@ -204,6 +200,7 @@ void testAsmAbs(
         int32_t expSignBit,  // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         );
 
@@ -217,6 +214,7 @@ void testAsmMult(
         int32_t expectedInitProduct, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         );
 
@@ -231,6 +229,7 @@ void testAsmFixSign(
         int32_t expectedFinalProduct, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         );
 
@@ -252,6 +251,7 @@ void testAsmMain(
         expectedValues * exp, // expected values
         int32_t * passCount,
         int32_t * failCount,
+        bool onlyPrintFails,
         volatile bool * txComplete
         );
 

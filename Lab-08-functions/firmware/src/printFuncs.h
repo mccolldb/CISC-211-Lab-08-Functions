@@ -157,42 +157,7 @@ extern "C" {
      */
 
     void printAndWait(char *txBuffer, volatile bool *txCompletePtr);
-
-    void printUnpack(int32_t testNum, 
-            char * description,
-            uint32_t packedVal, 
-            int32_t msbA, 
-            int32_t lsbB,
-            volatile bool * txCompletePtr);
-
-    void printAbs(int32_t testNum, 
-            char * description,
-            int32_t signedVal, 
-            int32_t absVal, 
-            int32_t signBit,
-            volatile bool * txCompletePtr); 
-    
-    void printInitialProduct(int32_t testNum, 
-            char * description,
-            int32_t absA, 
-            int32_t absB, 
-            int32_t result,
-            volatile bool * txCompletePtr); 
-    
-    void printFinalProduct(int32_t testNum, 
-            char * description,
-            int32_t initialProduct,
-            int32_t signBitA,
-            int32_t signBitB,
-            int32_t signCorrectedProduct, 
-            volatile bool * txCompletePtr); 
-    
-    void printIntegratedProduct(int32_t testNum, 
-            char * description,
-            uint32_t packedVal, 
-            int32_t integratedResult, 
-            volatile bool * txCompletePtr); 
-    
+    void printGlobalAddresses(char *uartTxBuffer, volatile bool *txCompletePtr);
     /* Provide C++ Compatibility */
 #ifdef __cplusplus
 }
