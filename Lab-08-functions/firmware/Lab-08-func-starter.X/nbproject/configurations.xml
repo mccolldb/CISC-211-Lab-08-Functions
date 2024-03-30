@@ -248,7 +248,6 @@
       <itemPath>../src/printFuncs.h</itemPath>
       <itemPath>../src/testFuncs.c</itemPath>
       <itemPath>../src/testFuncs.h</itemPath>
-      <itemPath>../src/asmMultSolutionFromProfs.s</itemPath>
       <itemPath>../src/asmExterns.h</itemPath>
     </logicalFolder>
   </logicalFolder>
@@ -299,7 +298,7 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <item path="../src/asmMult.s" ex="true" overriding="false">
+      <item path="../src/asmMult.s" ex="false" overriding="false">
         <C32>
         </C32>
         <C32-AR>
