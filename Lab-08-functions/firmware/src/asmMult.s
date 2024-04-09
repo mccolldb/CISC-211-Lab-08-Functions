@@ -19,7 +19,7 @@
 .type nameStr,%gnu_unique_object
     
 /*** STUDENTS: Change the next line to your name!  **/
-nameStr: .asciz "Inigo Montoya"  
+nameStr: .asciz "David McColl"  
  
 /* initialize a global variable that C can access to print the nameStr */
 .global nameStrPtr
@@ -79,15 +79,19 @@ final_Product:   .word     0
  *                  2) store unpacked B value in location
  *                     specified by r2
  */
-asmUnpack:   
-    
-    /*** STUDENTS: Place your asmUnpack code BELOW this line!!! **************/
-
-    
-    /*** STUDENTS: Place your asmUnpack code ABOVE this line!!! **************/
-
-
-    /***************  END ---- asmUnpack  ************/
+asmUnpack: 
+/*** STUDENTS: Place your asmUnpack code BELOW this line!!! **************/
+    /* void asmUnpack(uint packed, int* a, int* b) */
+    /*  R0                  R0      R1      R2     */
+    PUSH {r4-r11,LR}  // save caller registers
+    MOV R4,R0, ASR 16 // a value
+    STR R4,[R1]       // save to addr(a)
+    SXTH R5,R0        // b value
+    STR R5,[R2]       // save to addr(b)
+    POP  {r4-r11,LR}  // restore caller registers
+    BX LR             // return to caller
+/*** STUDENTS: Place your asmUnpack code ABOVE this line!!! **************/
+/***************  END ---- asmUnpack  ************/
 
  
 /* function: asmAbs
@@ -99,14 +103,20 @@ asmUnpack:
  *                      store sign bit in location given by r2
  */    
 asmAbs:  
-
-    /*** STUDENTS: Place your asmAbs code BELOW this line!!! **************/
-    
-
-    /*** STUDENTS: Place your asmAbs code ABOVE this line!!! **************/
-
-
-    /***************  END ---- asmAbs  ************/
+/*** STUDENTS: Place your asmAbs code BELOW this line!!! **************/
+    /* uint abs = asmAbs(int input, int* absOut, int* signBit); */
+    /*      R0                 R0         R1           R2       */
+    PUSH {r4-r11,LR}  // save caller registers
+    CMP R0,0          // cmp input to 0
+    NEGLT R0,R0       // if input<0 R0=-R0
+    MOVLT R3,1        //            sign = 1
+    MOVGE R3,0        // else       sign = 0
+    STR R0,[R1]       // save value to addr(abs)
+    STR R3,[R2]       // save sign  to addr(sign)
+    POP  {r4-r11,LR}  // restore caller registers
+    BX LR             // return to caller
+/*** STUDENTS: Place your asmAbs code ABOVE this line!!! **************/
+/***************  END ---- asmAbs  ************/
 
  
 /* function: asmMult
@@ -115,15 +125,22 @@ asmAbs:
  *    outputs:  r0: initial product: r0 * r1
  */ 
 asmMult:   
-
-    /*** STUDENTS: Place your asmMult code BELOW this line!!! **************/
-
-
-    /*** STUDENTS: Place your asmMult code ABOVE this line!!! **************/
-
-   
-    /***************  END ---- asmMult  ************/
-
+/*** STUDENTS: Place your asmMult code BELOW this line!!! **************/
+    /*   uint product = asmMult(uint a, uint b); */
+    /*          R0                 R0    R1      */
+    PUSH {r4-r11,LR}  // save caller registers
+    /* do the shift&add multiply  R0 * R1 -> R3 */
+    MOV r3,0          // initialize product accumulator */
+1:  TST R0,1          // Z=1 if lobit of shifted A clear */
+    ADDNE r3,r3,r1    // if Z==0 add copy of shifted B into accum  */
+    LSL  R1,R1,1      // double B  */
+    LSRS R0,R0,1      // halve A */
+    BNE 1b            // loop if A not yet zero */
+    MOV R0,R3         // move product to result=R0
+    POP  {r4-r11,LR}  // restore caller registers
+    BX LR             // return to caller
+/*** STUDENTS: Place your asmMult code ABOVE this line!!! **************/
+/***************  END ---- asmMult  ************/
 
     
 /* function: asmFixSign
@@ -137,18 +154,19 @@ asmMult:
  *                  sign-corrected version of initial product
  */ 
 asmFixSign:   
-    
-    /*** STUDENTS: Place your asmFixSign code BELOW this line!!! **************/
+/*** STUDENTS: Place your asmFixSign code BELOW this line!!! **************/
+    /*  int final = asmFixSign(int initial, int signBitA, int signBitB) */
+    /*        R0                     R0             R1            R2    */
+    PUSH {r4-r11,LR}  // save caller registers
+    ADD R1,R1,R2      // add sign bits
+    TST R1,1          // check for odd
+    NEGNE R0,R0       // if odd(tst!=0) final = -initial
+    POP  {r4-r11,LR}  // restore caller registers
+    BX LR             // return to caller
+/*** STUDENTS: Place your asmFixSign code ABOVE this line!!! **************/
+/***************  END ---- asmFixSign  ************/
 
-    
-    /*** STUDENTS: Place your asmFixSign code ABOVE this line!!! **************/
 
-
-    /***************  END ---- asmFixSign  ************/
-
-
-
-    
 /* function: asmMain
  *    inputs:   r0: contains packed value to be multiplied
  *                  using shift-and-add algorithm
@@ -162,62 +180,65 @@ asmFixSign:
  *           definition below.
  */  
 asmMain:   
-    
-    /*** STUDENTS: Place your asmMain code BELOW this line!!! **************/
-    
-    /* Step 1:
-     * call asmUnpack. Have it store the output values in a_Multiplicand
-     * and b_Multiplier.
+/*** STUDENTS: Place your asmMain code BELOW this line!!! **************/
+    /* int32 product = asmMain(uint packedValue) */
+    /*          R0                    R0         */
+    PUSH {r4-r11,LR}  // save caller registers
+    /* Step 1: call asmUnpack. 
+     * Have it store the output values in a_Multiplicand and b_Multiplier.
      */
-
-
-     /* Step 2a:
-      * call asmAbs for the multiplicand (a). Have it store the absolute value
-      * in a_Abs, and the sign in a_Sign.
+    MOV R0,R0   // R0 already has packed value
+    LDR R1,=a_Multiplicand
+    LDR R2,=b_Multiplier
+    BL asmUnpack
+     /* Step 2a: call asmAbs for the multiplicand (a). 
+      * Have it store the absolute value in a_Abs, and the sign in a_Sign.
       */
-
-
-
-     /* Step 2b:
-      * call asmAbs for the multiplier (b). Have it store the absolute value
-      * in b_Abs, and the sign in b_Sign.
+    LDR R0,=a_Multiplicand
+    LDR R0,[R0]
+    LDR R1,=a_Abs
+    LDR R2,=a_Sign
+    BL asmAbs
+     /* Step 2b: call asmAbs for the multiplier (b). 
+      * Have it store the absolute value in b_Abs, and the sign in b_Sign.
       */
-
-
-
-    /* Step 3:
-     * call asmMult. Pass a_Abs as the multiplicand, 
-     * and b_Abs as the multiplier.
+    LDR R0,=b_Multiplier
+    LDR R0,[R0]
+    LDR R1,=b_Abs
+    LDR R2,=b_Sign
+    BL asmAbs
+    /* Step 3: call asmMult. 
+     * Pass a_Abs as the multiplicand, and b_Abs as the multiplier.
      * asmMult returns the initial (positive) product in r0.
      * In this function (asmMain), store the output value  
      * returned asmMult in r0 to mem location init_Product.
      */
-
-
-    /* Step 4:
-     * call asmFixSign. Pass in the initial product, and the
-     * sign bits for the original a and b inputs. 
-     * asmFixSign returns the final product with the correct
-     * sign. Store the value returned in r0 to mem location 
-     * final_Product.
+    LDR R0,=a_Abs
+    LDR R0,[R0]
+    LDR R1,=b_Abs
+    LDR R1,[R1]
+    BL asmMult
+    LDR R1,=init_Product
+    STR R0,[R1]
+    /* Step 4: call asmFixSign. 
+     * Pass in the initial product, and the sign bits for a and b inputs. 
+     * asmFixSign returns the final product with the correct sign.
+     * Store the value returned in r0 to mem location final_Product.
      */
-
-
-     /* Step 5:
-      * END! Return to caller. Make sure of the following:
+    LDR R1,=a_Sign
+    LDR R1,[R1]
+    LDR R2,=b_Sign
+    LDR R2,[R2]
+    BL asmFixSign
+    LDR R1,=final_Product
+    STR R0,[R1]
+     /* Step 5: Return to caller. 
+      * Make sure of the following:
       * 1) Stack has been correctly managed.
-      * 2) the final answer is stored in r0, so that the C call 
-      *    can access it.
+      * 2) the final answer is stored in r0, so that the C call can access it.
       */
-
-
-    
-    /*** STUDENTS: Place your asmMain code ABOVE this line!!! **************/
-
-
-    /***************  END ---- asmMain  ************/
-
- 
-    
-    
+    POP  {r4-r11,LR}  // restore caller registers
+    BX LR             // return to caller    
+/*** STUDENTS: Place your asmMain code ABOVE this line!!! **************/
+/***************  END ---- asmMain  ************/
 .end   /* the assembler will ignore anything after this line. */

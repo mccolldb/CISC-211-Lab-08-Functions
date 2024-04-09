@@ -243,7 +243,7 @@ void testAsmUnpack(
     check(inputA, *unpackedA, passCount, failCount, &aCheck);
     check(inputB, *unpackedB, passCount, failCount, &bCheck);
 
-    if((onlyPrintFails == true) && (*failCount != 0))
+    if( (onlyPrintFails == false) || ((onlyPrintFails == true) && (*failCount != 0)))
     {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
@@ -297,7 +297,7 @@ void testAsmAbs(
     check(expAbs, r0_absVal, passCount, failCount, &r0Check);
     check(expSignBit, *signBit, passCount, failCount, &sbMemCheck);
 
-    if((onlyPrintFails == true) && (*failCount != 0))
+    if( (onlyPrintFails == false) || ((onlyPrintFails == true) && (*failCount != 0)))
     {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
@@ -345,7 +345,7 @@ void testAsmMult(
     
     check(expectedInitProduct, r0_initProd, passCount, failCount, &prodCheck);
 
-    if((onlyPrintFails == true) && (*failCount != 0))
+    if( (onlyPrintFails == false) || ((onlyPrintFails == true) && (*failCount != 0)))
     {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
@@ -391,7 +391,7 @@ void testAsmFixSign(
     
     check(expectedFinalProduct, r0_finalProduct, passCount, failCount, &prodCheck);
 
-    if((onlyPrintFails == true) && (*failCount != 0))
+    if( (onlyPrintFails == false) || ((onlyPrintFails == true) && (*failCount != 0)))
     {
     // build the string to be sent out over the serial lines
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
@@ -463,7 +463,7 @@ void testAsmMain(
     check(exp->finalProduct, finalProduct, passCount, failCount, &finalProdCheck);
     check(exp->finalProduct, r0_mainFinalProd, passCount, failCount, &r0Check);
  
-    if((onlyPrintFails == true) && (*failCount != 0))
+    if( (onlyPrintFails == false) || ((onlyPrintFails == true) && (*failCount != 0)))
     {
     snprintf((char*)txBuffer, MAX_PRINT_LEN,
             "========= testAsmMain %s test number: %ld\r\n"

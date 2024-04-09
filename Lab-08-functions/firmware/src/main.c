@@ -78,7 +78,7 @@ static uint8_t uartTxBuffer[MAX_PRINT_LEN] = {0};
 static int32_t tc[] = {
     0x00020003,
     0xFFFC0003,  // -,+
-    0,  // 0,0
+    0x00000000,  // 0,0
     0x00000005,  // 0,+
     0x0000FFFC,  // 0,-
     0xFFFD0000,  // -,0
@@ -102,13 +102,17 @@ static int32_t tc[] = {
 /* These functions will be implemented by students in asmMult.s */
 /* asmUnpack: no return value */
 extern void asmUnpack(uint32_t packedValue, int32_t* a, int32_t* b);
+
 /* asmAbs: return abs value. Also store abs value at location absOut,
  * and sign bit at location signBit. Must b 0 for +, 1 for negative */
 extern int32_t asmAbs(int32_t input, int32_t *absOut, int32_t *signBit);
+
 /* return product of two positive integers guaranteed to be <= 2^16 */
 extern int32_t asmMult(int32_t a, int32_t b);
+
 /* return corrected product based on signs of two original input values */
 extern int32_t asmFixSign(int32_t initProduct, int32_t signBitA, int32_t signBitB);
+
 /* Executes student's asmMain() function that ties together all of the above */
 extern int32_t asmMain(uint32_t packedValue);
 
@@ -235,7 +239,7 @@ int main ( void )
 
                 isUSARTTxComplete = false;
                 snprintf((char*)uartTxBuffer, MAX_PRINT_LEN,
-                        "========= asmAbs In-progress test summary:\r\n"
+                        "========= asmUnpack In-progress test summary:\r\n"
                         "%ld of %ld tests passed so far...\r\n"
                         "\r\n",
                         unpackTotalPassCount, unpackTotalTests); 
@@ -654,6 +658,7 @@ int main ( void )
                 RTC_Timer32CounterSet(0); // reset timer to start at 0
             }
 #endif
+             return ( EXIT_FAILURE ); // stop after first iteration
         } // end - post-test forever loop
         
         // Should never get here...
